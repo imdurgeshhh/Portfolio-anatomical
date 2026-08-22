@@ -15,7 +15,7 @@ export default function GlassHero() {
   const currentRadius = useRef(0);
   const targetRadius = useRef(0);
   const isTouch = useRef(false);
-  const frameId = useRef<number>();
+  const frameId = useRef<number>(0);
   const isReducedMotion = useRef(false);
 
   useEffect(() => {
