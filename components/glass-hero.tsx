@@ -1,14 +1,18 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Link from "next/link";
+import { Signature } from "@/components/ui/signature";
+import { useResponsiveFontSize } from "@/hooks/use-responsive-font-size";
+import { ShaderButtons } from "@designcodeio/threeui";
+import "@designcodeio/threeui/style.css";
 
 const DESKTOP_RADIUS = 235;
 const MOBILE_RADIUS = 150;
 
 export default function GlassHero() {
   const containerRef = useRef<HTMLDivElement>(null);
-  
+  const fontSize = useResponsiveFontSize(64);
+
   // Refs for animation loop
   const rawPos = useRef({ x: -999, y: -999 });
   const smoothedPos = useRef({ x: -999, y: -999 });
@@ -17,6 +21,19 @@ export default function GlassHero() {
   const isTouch = useRef(false);
   const frameId = useRef<number>(0);
   const isReducedMotion = useRef(false);
+
+  useEffect(() => {
+    const handleMessage = (e: MessageEvent) => {
+      if (
+        e.data?.type === "threeui-shader-button-click" ||
+        e.data?.type === "shader-button-click"
+      ) {
+        document.getElementById("slide-section")?.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
 
   useEffect(() => {
     isReducedMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -85,7 +102,7 @@ export default function GlassHero() {
   return (
     <section
       ref={containerRef}
-      className="relative w-full h-screen overflow-hidden selection:bg-black/20"
+      className="relative w-full h-screen min-h-[640px] overflow-hidden selection:bg-black/20 flex flex-col justify-between"
       onPointerEnter={handlePointerEnter}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
@@ -93,88 +110,83 @@ export default function GlassHero() {
       onPointerUp={handlePointerLeave}
       onPointerDown={handlePointerEnter}
     >
-      {/* 1. Base Portrait */}
-      <div 
+      {/* 1. Base Portrait Bleeding off Right/Bottom edge */}
+      <div
         className="absolute inset-0 w-full h-full bg-center bg-no-repeat bg-cover -z-20 base-portrait-anim"
         style={{ backgroundImage: "url('/images/Base_image_desktop.png')" }}
         aria-hidden="true"
       />
-      
+
       {/* 2. Reveal Portrait with Radial Mask */}
-      <div 
+      <div
         className="absolute inset-0 w-full h-full bg-center bg-no-repeat bg-cover -z-10 reveal-mask"
         style={{ backgroundImage: "url('/images/Reveal_image_desktop.png')" }}
         aria-hidden="true"
       />
 
-      {/* 3. Technical Grid and Large Circle */}
-      <div className="absolute inset-0 w-full h-full pointer-events-none -z-5 opacity-10 flex items-center justify-center" aria-hidden="true">
-        {/* Simple grid overlay */}
-        <div className="absolute inset-0" style={{ backgroundImage: "linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px)", backgroundSize: "4rem 4rem" }} />
-        {/* Large circle */}
+      {/* 3. Technical Aesthetic Circle */}
+      <div
+        className="absolute inset-0 w-full h-full pointer-events-none -z-5 opacity-10 flex items-center justify-center"
+        aria-hidden="true"
+      >
         <div className="w-[80vmin] h-[80vmin] rounded-full border border-black/10" />
       </div>
 
-      {/* 5. Navigation */}
-      <header className="absolute top-[max(2.5rem,env(safe-area-inset-top))] left-[max(5.6vw,2rem)] right-[max(5.6vw,2rem)] z-50 flex items-center justify-between nav-anim">
-        <div className="flex items-center gap-3">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-black" aria-hidden="true">
-            <path d="M22 10L10 22M10 10L22 22" stroke="currentColor" strokeWidth="3" strokeLinecap="square" />
-            <path d="M16 4L4 16L16 28L28 16L16 4Z" stroke="currentColor" strokeWidth="2" />
-          </svg>
-          <span className="text-xl font-medium tracking-tight">Durgesh</span>
+      {/* 4. Top-Left and Top-Right Micro Labels */}
+      <div className="relative z-30 pt-7 sm:pt-9 px-[max(5.6vw,2rem)] flex items-center justify-between pointer-events-none">
+        <span className="font-mono text-[10px] sm:text-xs text-black/50 tracking-widest uppercase">
+          INTERACTIVE DIMENSION · HOVER TO REVEAL
+        </span>
+        <span className="font-mono text-[10px] sm:text-xs text-black/40 tracking-wider hidden sm:inline">
+          Curated Visual Experience
+        </span>
+      </div>
+
+      {/* 5. Left Column Content: Heading, Subtext, Button */}
+      <div className="relative z-30 px-[max(5.6vw,2rem)] my-auto max-w-2xl py-8">
+        {/* Animated handwritten SVG signature with accessible text */}
+        <div
+          className="w-full overflow-visible relative text-black select-none flex items-center"
+          style={{ minHeight: `${fontSize * 3}px` }}
+        >
+          <h1 className="sr-only">Durgesh</h1>
+          <Signature
+            text="Durgesh"
+            fontSize={fontSize}
+            duration={1.5}
+            delay={0.3}
+            color="#000000"
+            className="max-w-full h-auto text-black"
+          />
         </div>
 
-        <nav className="hidden md:flex items-center gap-8">
-          {["About", "Work", "Process", "Experiments"].map((item) => (
-            <Link key={item} href={`#${item.toLowerCase()}`} className="text-sm font-medium hover:text-black/70 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-black rounded px-2 py-1 min-h-[44px] min-w-[44px] flex items-center justify-center">
-              {item}
-            </Link>
-          ))}
-        </nav>
-
-        <a 
-          href="https://www.linkedin.com/in/durgesh-nandan-sahu-fullstack-developer/" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="bg-white text-black text-sm font-medium px-5 min-h-[44px] flex items-center justify-center rounded-full hover:bg-black hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-black/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-        >
-          Let&apos;s talk
-        </a>
-      </header>
-
-      {/* 4. Headline and copy */}
-      <div className="absolute top-[34%] left-[max(5.6vw,2rem)] z-40">
-        <h1 className="flex flex-col m-0 p-0 font-albert font-light uppercase" style={{ fontSize: "clamp(5.4rem, 6.2vw, 6.8rem)", lineHeight: 0.93, letterSpacing: "-0.085em" }}>
-          <span className="overflow-hidden inline-block"><span className="block heading-line-anim delay-[100ms]">Building</span></span>
-          <span className="overflow-hidden inline-block"><span className="block heading-line-anim delay-[200ms]">Beyond</span></span>
-          <span className="overflow-hidden inline-block"><span className="block heading-line-anim delay-[300ms]">Possible.</span></span>
-        </h1>
-      </div>
-
-      {/* Bottom left copy and CTA */}
-      <div className="absolute bottom-12 md:bottom-16 left-[max(5.6vw,2rem)] max-w-sm z-40 copy-fade-anim delay-[500ms]">
-        <p className="text-lg md:text-xl font-albert font-light text-black/90 leading-relaxed mb-6">
+        {/* Short paragraph text */}
+        <p className="mt-6 sm:mt-8 text-sm sm:text-base font-sans font-normal text-black/80 leading-relaxed max-w-md copy-fade-anim delay-[450ms]">
           I build useful products, experiment with emerging technology, and turn the process into stories worth sharing.
         </p>
-        <a 
-          href="https://github.com/imdurgeshhh" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="inline-flex bg-white text-black text-sm font-medium px-6 min-h-[44px] items-center justify-center rounded-full hover:bg-black hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-black/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-        >
-          Explore my work
-        </a>
+
+        {/* ThreeUI ShaderButtons (Star Portal) replacing 'Explore my work' button */}
+        <div className="mt-8 copy-fade-anim delay-[600ms]">
+          <div
+            className="shader-frame w-full max-w-[320px] sm:max-w-[360px] !h-[90px] sm:!h-[105px] !min-h-0 relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-black/10 transition-transform active:scale-[0.98] cursor-pointer"
+            onClick={() => {
+              document.getElementById("slide-section")?.scrollIntoView({ behavior: "smooth" });
+            }}
+          >
+            <span className="sr-only">Explore my work</span>
+            <ShaderButtons
+              mode="dark"
+              hue={0}
+              saturation={1.00}
+              brightness={1.00}
+              className="w-full h-full"
+            />
+          </div>
+        </div>
       </div>
 
-      {/* Bottom right manifesto */}
-      <div className="absolute bottom-12 md:bottom-16 right-[max(5.6vw,2rem)] z-40 copy-fade-anim delay-[700ms] hidden sm:block">
-        <p className="font-fragment text-xs text-black/60 text-right leading-loose tracking-widest uppercase">
-          Building the<br />
-          next version<br />
-          in public
-        </p>
-      </div>
+      {/* Bottom spacing buffer */}
+      <div className="h-6 pointer-events-none" />
     </section>
   );
 }

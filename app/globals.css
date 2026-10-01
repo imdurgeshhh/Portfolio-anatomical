@@ -6,14 +6,24 @@
   --reveal-x: -999px;
   --reveal-y: -999px;
   --reveal-radius: 0px;
+
+  /* transitions.dev & Emil Kowalski motion tokens */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --duration-fast: 160ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
 }
 
 body {
   margin: 0;
   padding: 0;
-  background-color: #f5f5f5;
+  background-color: #dce9f7;
+  background-image: linear-gradient(145deg, #cde0f5 0%, #dceafa 30%, #eaf2fc 60%, #f4f8fe 100%);
+  background-attachment: fixed;
   color: #000;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .reveal-mask {
@@ -23,7 +33,7 @@ body {
   -webkit-mask-repeat: no-repeat;
 }
 
-/* Animations */
+/* Base keyframe animations */
 @keyframes basePortraitReveal {
   from {
     opacity: 0;
@@ -68,23 +78,126 @@ body {
   }
 }
 
+/* Slide and summary transitions from transitions.dev */
+@keyframes slideReveal {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes summaryReveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .base-portrait-anim {
-  animation: basePortraitReveal 1.1s ease-out forwards;
+  animation: basePortraitReveal 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .nav-anim {
   opacity: 0;
-  animation: navFadeDown 0.8s ease-out 0.2s forwards;
+  animation: navFadeDown 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
 }
 
 .heading-line-anim {
   opacity: 0;
-  animation: textRevealUp 0.8s cubic-bezier(0.2, 0, 0, 1) forwards;
+  animation: textRevealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .copy-fade-anim {
   opacity: 0;
-  animation: copyFadeUp 0.8s ease-out forwards;
+  animation: copyFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-reveal {
+  animation: slideReveal 350ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-summary-reveal {
+  animation: summaryReveal 400ms cubic-bezier(0.16, 1, 0.3, 1) 60ms backwards;
+}
+
+/* Micro-interaction helpers */
+.press-scale {
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+.press-scale:active {
+  transform: scale(0.97);
+}
+
+/* ─── Section Bridge: Hero → Spotlight organic transition ────────────────────
+ *
+ * The bridge sits between the two sections with negative margins so it
+ * overlaps both edges slightly, hiding any rounding artifacts. The SVG
+ * curve animates on the compositor (transform only) — no layout thrash.
+ *
+ * Keyframe: sectionBreathe
+ *   - Period: 9 s — slow enough to feel ambient, not distracting.
+ *   - Amplitude: translateY(-6px) — barely perceptible vertical drift.
+ *   - Easing: ease-in-out — smooth, rounded, no abrupt direction change.
+ * ─────────────────────────────────────────────────────────────────────────── */
+@keyframes sectionBreathe {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.section-bridge {
+  position: relative;
+  /* Pull up into the hero's bottom and down into the spotlight's top */
+  margin-top: -32px;
+  margin-bottom: -32px;
+  height: 64px;
+  width: 100%;
+  pointer-events: none;
+  z-index: 30;
+  overflow: hidden;
+}
+
+.section-bridge__curve {
+  position: absolute;
+  inset: 0;
+  /* The breathing animation — compositor-only, runs off the main thread */
+  animation: sectionBreathe 9s ease-in-out infinite;
+  will-change: transform;
+}
+
+.section-bridge__svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Soft hairline: fades from transparent at both edges to a whisper in the middle.
+   Replaces the hard border-t border-black/10. */
+.section-bridge__line {
+  position: absolute;
+  bottom: 32px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 0.07) 20%,
+    rgba(0, 0, 0, 0.07) 80%,
+    transparent 100%
+  );
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -97,3 +210,49 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* ─── ThreeUI CharacterCarousel Glass Theme ───────────────────────────────── */
+.shader-frame {
+  position: relative;
+  width: 100%;
+  height: 560px;
+  min-height: 480px;
+  overflow: hidden;
+}
+
+@media (max-width: 650px) {
+  .shader-frame {
+    height: 600px;
+    min-height: 560px;
+  }
+}
+
+.tech-carousel-glass {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 10px 30px -10px rgba(30, 80, 140, 0.08),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* ─── ThreeUI ConstellationField Blue Glass Theme ──────────────────────────── */
+.constellation-blue {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.constellation-blue iframe {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  border: 0 !important;
+  pointer-events: none !important;
+  background: transparent !important;
+}
+
