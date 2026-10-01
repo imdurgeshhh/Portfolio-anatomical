@@ -146,7 +146,7 @@ function FlipCard({
 
   return (
     <motion.article
-      className="absolute inset-x-0 top-0 aspect-[3/4] w-full will-change-transform sm:aspect-[1.76/1]"
+      className="absolute inset-x-0 top-0 w-full h-[480px] sm:h-auto sm:aspect-[1.8/1] will-change-transform"
       style={{
         y: exitY,
         rotateX,
@@ -159,7 +159,7 @@ function FlipCard({
       }}
     >
       <motion.div
-        className="flex flex-col justify-between h-full overflow-hidden rounded-[clamp(14px,1.6vw,24px)] shadow-[0_16px_50px_rgba(30,80,140,0.18),0_0_30px_rgba(147,197,253,0.25)] border border-white/20 sm:grid sm:grid-cols-[0.7fr_1.3fr] sm:items-center"
+        className="flex flex-col justify-between h-full overflow-hidden rounded-2xl sm:rounded-3xl shadow-[0_16px_50px_rgba(0,0,0,0.25)] border border-white/20 sm:grid sm:grid-cols-[0.85fr_1.15fr] sm:items-center transition-shadow"
         style={{
           backgroundColor: item.background,
           color: item.foreground ?? "white",
@@ -168,36 +168,44 @@ function FlipCard({
           transformOrigin: "50% 100%",
         }}
       >
-        <div className="flex min-w-0 flex-col justify-between h-full p-[clamp(16px,2vw,32px)] md:pr-[clamp(12px,1.6vw,24px)]">
-          <div className="flex items-start">
-            <span className="text-[clamp(19px,2vw,28px)] font-mono font-medium leading-none tracking-[-0.06em]">
-              {item.number ?? String(index + 1).padStart(2, "0")}
+        <div className="flex min-w-0 flex-col justify-between h-full p-5 sm:p-7 md:p-8">
+          {/* Header row with Eyebrow and Number */}
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-[10px] sm:text-xs font-mono font-semibold uppercase tracking-[0.16em] px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-xs border border-white/15">
+              {item.eyebrow}
+            </span>
+            <span className="text-xs sm:text-sm font-mono font-medium opacity-60">
+              {item.number ?? String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
             </span>
           </div>
 
-          <div className="mt-auto max-w-[34rem] pt-3 sm:pt-4">
-            <p className="mb-[clamp(6px,1vw,14px)] text-[9px] font-mono font-semibold uppercase tracking-[0.16em] opacity-75 sm:text-[11px]">
-              {item.eyebrow}
-            </p>
-            <h2 className="text-balance text-[clamp(17px,2vw,26px)] font-sans font-semibold leading-[1.02] tracking-[-0.04em]">
+          {/* Text block */}
+          <div className="my-auto py-2 sm:py-3">
+            <h2 className="text-balance text-lg sm:text-2xl font-sans font-semibold leading-snug tracking-tight">
               {item.title}
             </h2>
-            <p className="mt-[clamp(8px,1vw,14px)] max-w-[32rem] text-[clamp(11px,0.9vw,13px)] font-sans leading-[1.4] opacity-85 line-clamp-3 sm:line-clamp-none">
+            <p className="mt-2 sm:mt-3 text-xs sm:text-sm font-sans leading-relaxed opacity-85 line-clamp-3 sm:line-clamp-4">
               {item.description}
             </p>
           </div>
+
+          <div className="flex items-center gap-2 text-[10px] font-mono opacity-60">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            <span>Shipped & Deployed</span>
+          </div>
         </div>
 
-        <div className="relative m-[clamp(8px,1vw,14px)] aspect-[2/1] overflow-hidden rounded-[clamp(10px,1.2vw,18px)] sm:ml-0 bg-black/40 backdrop-blur-xs border border-white/10 flex items-center justify-center shadow-inner self-center">
+        {/* Project Preview Image */}
+        <div className="relative m-3 sm:m-4 sm:ml-0 aspect-[16/10] overflow-hidden rounded-xl bg-black/40 backdrop-blur-xs border border-white/10 flex items-center justify-center shadow-inner self-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={item.image}
             alt={item.imageAlt}
-            className="h-full w-full object-contain p-1.5 sm:p-2"
+            className="h-full w-full object-cover object-center"
             loading={index < 2 ? "eager" : "lazy"}
             draggable={false}
           />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/10" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-black/25 via-transparent to-white/10" />
         </div>
       </motion.div>
     </motion.article>
@@ -228,13 +236,14 @@ export function CaseStudyFlipStack({
 
   return (
     <section
-      className={cn("relative bg-transparent font-sans text-black", className)}
+      className={cn("relative bg-transparent font-sans text-black dark:text-white w-full", className)}
     >
-      <div className="relative h-[82vh] min-h-[640px] overflow-hidden px-5 sm:px-10 flex flex-col justify-center items-center">
-        <div className="absolute inset-x-0 top-[clamp(110px,16vh,165px)] flex items-center justify-center gap-[clamp(14px,2.5vw,32px)] text-[clamp(26px,3.5vw,52px)] font-sans font-light tracking-[-0.055em] text-black/70">
+      {/* Intro Heading Section */}
+      <div className="relative py-16 sm:py-24 px-5 sm:px-10 flex flex-col justify-center items-center text-center max-w-4xl mx-auto">
+        <div className="flex items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm font-mono tracking-widest uppercase text-black/60 dark:text-[#F5C451]/80 mb-3 transition-colors">
           <motion.span
             aria-hidden="true"
-            animate={reduceMotion ? undefined : { y: [0, 10, 0] }}
+            animate={reduceMotion ? undefined : { y: [0, 4, 0] }}
             transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
           >
             ↓
@@ -242,7 +251,7 @@ export function CaseStudyFlipStack({
           <span>{hint}</span>
           <motion.span
             aria-hidden="true"
-            animate={reduceMotion ? undefined : { y: [0, 10, 0] }}
+            animate={reduceMotion ? undefined : { y: [0, 4, 0] }}
             transition={{
               duration: 1.4,
               delay: 0.18,
@@ -254,20 +263,19 @@ export function CaseStudyFlipStack({
           </motion.span>
         </div>
 
-        <div className="absolute inset-x-5 top-[clamp(330px,43vh,440px)] flex justify-center sm:inset-x-10">
-          <h1 className="max-w-[18ch] text-center text-[clamp(42px,5.5vw,82px)] font-sans font-semibold leading-[0.92] tracking-[-0.06em] text-black">
-            {heading}
-          </h1>
-        </div>
+        <h2 className="text-3xl sm:text-5xl md:text-6xl font-sans font-light tracking-tight text-black dark:text-white transition-colors">
+          {heading}
+        </h2>
       </div>
 
+      {/* Pinned Card Flip Stack */}
       <div
         ref={stackRef}
         className="relative"
-        style={{ height: `${(Math.max(safeItems.length, 1) + 1) * 100}vh` }}
+        style={{ height: `${safeItems.length * 85 + 40}vh` }}
       >
-        <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden px-[clamp(14px,4vw,64px)] py-8 pt-16">
-          <div className="relative mx-auto aspect-[3/4] w-[80%] max-w-[688px] [perspective:800px] sm:w-full sm:aspect-[1.76/1]">
+        <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden px-4 sm:px-8 py-8 pt-16 sm:pt-20">
+          <div className="relative mx-auto w-full max-w-[760px] h-[480px] sm:h-auto sm:aspect-[1.8/1] [perspective:1000px]">
             {[...safeItems].reverse().map((item, reverseIndex) => {
               const index = safeItems.length - reverseIndex - 1;
               return (
@@ -285,10 +293,17 @@ export function CaseStudyFlipStack({
         </div>
       </div>
 
-      <div className="flex min-h-[120vh] items-center justify-center px-5 sm:px-10">
-        <p className="text-center text-[clamp(54px,9vw,144px)] font-sans font-semibold leading-none tracking-[-0.07em] text-black/80">
+      {/* End Buffer Section */}
+      <div className="py-20 sm:py-28 flex flex-col items-center justify-center px-5 text-center">
+        <p className="text-3xl sm:text-5xl md:text-6xl font-sans font-light tracking-tight text-black/70 dark:text-white/70 transition-colors">
           {endLabel}
         </p>
+        <div className="mt-4 flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-blue-500 dark:bg-[#F5C451] animate-pulse" />
+          <span className="text-xs font-mono tracking-widest uppercase text-black/50 dark:text-white/50">
+            More Case Studies In Progress
+          </span>
+        </div>
       </div>
     </section>
   );

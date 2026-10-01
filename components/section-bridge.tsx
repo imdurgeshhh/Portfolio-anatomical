@@ -26,22 +26,11 @@ export default function SectionBridge() {
           viewBox="0 0 1440 64"
           xmlns="http://www.w3.org/2000/svg"
           preserveAspectRatio="none"
-          className="section-bridge__svg"
+          className="section-bridge__svg text-sky-900/[0.04] dark:text-[#F5C451]/[0.06] transition-colors"
         >
-          <defs>
-            <linearGradient id="bridgeFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="rgba(220,234,248,0)" />
-              <stop offset="100%" stopColor="rgba(220,234,248,0.18)" />
-            </linearGradient>
-          </defs>
-          {/*
-            A single cubic Bézier path with ~9px amplitude.
-            Control points are deliberately asymmetric to avoid a "template wave" look.
-            The curve is nearly invisible on its own — the animation provides the life.
-          */}
           <path
             d="M0,32 C240,22 480,44 720,34 C960,24 1200,46 1440,30 L1440,64 L0,64 Z"
-            fill="url(#bridgeFill)"
+            fill="currentColor"
           />
         </svg>
       </div>

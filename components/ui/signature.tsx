@@ -110,6 +110,8 @@ export function Signature({
     visible: { pathLength: 1, opacity: 1 },
   };
 
+  const goldGradId = `sig-gold-${useId().replace(/:/g, "")}`;
+
   return (
     <motion.svg
       key={paths.length}
@@ -117,13 +119,20 @@ export function Signature({
       height={height}
       viewBox={`0 0 ${width} ${height}`}
       fill="none"
-      className={cn("text-black overflow-visible", className)}
+      className={cn("overflow-visible select-none", className)}
       initial="hidden"
       whileInView={inView ? "visible" : undefined}
       animate={inView ? undefined : "visible"}
       viewport={{ once }}
     >
       <defs>
+        {/* Golden Linear Gradient: #F5C451 -> #D4A017 -> #FFE08A */}
+        <linearGradient id={goldGradId} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#F5C451" />
+          <stop offset="50%" stopColor="#D4A017" />
+          <stop offset="100%" stopColor="#FFE08A" />
+        </linearGradient>
+
         <mask id={maskId} maskUnits="userSpaceOnUse">
           {paths.map((d, i) => (
             <motion.path
@@ -152,33 +161,74 @@ export function Signature({
         </mask>
       </defs>
 
-      {paths.map((d, i) => (
-        <motion.path
-          key={i}
-          d={d}
-          stroke={color}
-          strokeWidth={2}
-          fill="none"
-          variants={variants}
-          transition={{
-            pathLength: {
-              delay: delay + i * 0.2,
-              duration,
-              ease: "easeInOut",
-            },
-            opacity: {
-              delay: delay + i * 0.2 + 0.01,
-              duration: 0.01,
-            },
-          }}
-          vectorEffect="non-scaling-stroke"
-          strokeLinecap="butt"
-          strokeLinejoin="round"
-        />
-      ))}
+      {/* Light Mode Layer: Clean crisp black (or custom color) */}
+      <g className={color === "golden" ? "hidden" : "dark:hidden"}>
+        {paths.map((d, i) => (
+          <motion.path
+            key={`light-stroke-${i}`}
+            d={d}
+            stroke={color === "currentColor" ? "currentColor" : color}
+            strokeWidth={2}
+            fill="none"
+            variants={variants}
+            transition={{
+              pathLength: {
+                delay: delay + i * 0.2,
+                duration,
+                ease: "easeInOut",
+              },
+              opacity: {
+                delay: delay + i * 0.2 + 0.01,
+                duration: 0.01,
+              },
+            }}
+            vectorEffect="non-scaling-stroke"
+            strokeLinecap="butt"
+            strokeLinejoin="round"
+          />
+        ))}
+        <g mask={`url(#${maskId})`}>
+          {paths.map((d, i) => (
+            <path
+              key={`light-fill-${i}`}
+              d={d}
+              fill={color === "currentColor" ? "currentColor" : color}
+            />
+          ))}
+        </g>
+      </g>
 
-      <g mask={`url(#${maskId})`}>
-        {paths.map((d, i) => <path key={i} d={d} fill={color} />)}
+      {/* Dark Mode Layer: Radiant Golden Gradient with Soft Ambient Glow */}
+      <g className={color === "golden" ? "block [filter:drop-shadow(0_0_12px_rgba(245,196,81,0.45))]" : "hidden dark:block [filter:drop-shadow(0_0_12px_rgba(245,196,81,0.45))] [isolation:isolate]"}>
+        {paths.map((d, i) => (
+          <motion.path
+            key={`dark-stroke-${i}`}
+            d={d}
+            stroke={`url(#${goldGradId})`}
+            strokeWidth={2}
+            fill="none"
+            variants={variants}
+            transition={{
+              pathLength: {
+                delay: delay + i * 0.2,
+                duration,
+                ease: "easeInOut",
+              },
+              opacity: {
+                delay: delay + i * 0.2 + 0.01,
+                duration: 0.01,
+              },
+            }}
+            vectorEffect="non-scaling-stroke"
+            strokeLinecap="butt"
+            strokeLinejoin="round"
+          />
+        ))}
+        <g mask={`url(#${maskId})`}>
+          {paths.map((d, i) => (
+            <path key={`dark-fill-${i}`} d={d} fill={`url(#${goldGradId})`} />
+          ))}
+        </g>
       </g>
     </motion.svg>
   );

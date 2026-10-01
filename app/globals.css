@@ -3,6 +3,18 @@
 @tailwind utilities;
 
 :root {
+  --background: #dce9f7;
+  --foreground: #000000;
+  --muted: #526075;
+  --muted-foreground: #64748b;
+  --border: rgba(0, 0, 0, 0.1);
+  --card: rgba(255, 255, 255, 0.65);
+  --card-foreground: #000000;
+  --accent: #2563eb;
+  --accent-foreground: #ffffff;
+  --gold: #F5C451;
+  --gold-glow: rgba(245, 196, 81, 0.4);
+
   --reveal-x: -999px;
   --reveal-y: -999px;
   --reveal-radius: 0px;
@@ -16,6 +28,20 @@
   --duration-slow: 400ms;
 }
 
+.dark {
+  --background: #070914;
+  --foreground: #ffffff;
+  --muted: #94a3b8;
+  --muted-foreground: #cbd5e1;
+  --border: rgba(255, 255, 255, 0.1);
+  --card: rgba(12, 16, 36, 0.7);
+  --card-foreground: #ffffff;
+  --accent: #F5C451;
+  --accent-foreground: #070914;
+  --gold: #F5C451;
+  --gold-glow: rgba(245, 196, 81, 0.45);
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -24,6 +50,15 @@ body {
   background-attachment: fixed;
   color: #000;
   overflow-x: clip;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.dark body,
+html.dark body {
+  background-color: #070914;
+  background-image: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(245, 196, 81, 0.05), transparent 70%);
+  background-attachment: fixed;
+  color: #ffffff;
 }
 
 .reveal-mask {
@@ -159,13 +194,12 @@ body {
 
 .section-bridge {
   position: relative;
-  /* Pull up into the hero's bottom and down into the spotlight's top */
-  margin-top: -32px;
-  margin-bottom: -32px;
-  height: 64px;
+  margin-top: 0;
+  margin-bottom: 0;
+  height: 48px;
   width: 100%;
   pointer-events: none;
-  z-index: 30;
+  z-index: 20;
   overflow: hidden;
 }
 
@@ -187,7 +221,7 @@ body {
    Replaces the hard border-t border-black/10. */
 .section-bridge__line {
   position: absolute;
-  bottom: 32px;
+  bottom: 0;
   left: 0;
   right: 0;
   height: 1px;
@@ -196,6 +230,16 @@ body {
     transparent 0%,
     rgba(0, 0, 0, 0.07) 20%,
     rgba(0, 0, 0, 0.07) 80%,
+    transparent 100%
+  );
+}
+
+.dark .section-bridge__line {
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(245, 196, 81, 0.15) 20%,
+    rgba(245, 196, 81, 0.15) 80%,
     transparent 100%
   );
 }
@@ -212,19 +256,31 @@ body {
 }
 
 /* ─── ThreeUI CharacterCarousel Glass Theme ───────────────────────────────── */
-.shader-frame {
+.tech-carousel-frame {
   position: relative;
   width: 100%;
-  height: 560px;
-  min-height: 480px;
+  max-width: 100%;
+  height: 440px;
   overflow: hidden;
 }
 
-@media (max-width: 650px) {
-  .shader-frame {
-    height: 600px;
-    min-height: 560px;
+@media (min-width: 640px) {
+  .tech-carousel-frame {
+    height: 520px;
   }
+}
+
+@media (min-width: 1024px) {
+  .tech-carousel-frame {
+    height: 560px;
+  }
+}
+
+.shader-frame {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .tech-carousel-glass {
@@ -235,6 +291,16 @@ body {
   box-shadow:
     0 10px 30px -10px rgba(30, 80, 140, 0.08),
     inset 0 1px 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.dark .tech-carousel-glass {
+  background: rgba(12, 16, 36, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 10px 30px -10px rgba(0, 0, 0, 0.6),
+    inset 0 1px 1px 0 rgba(245, 196, 81, 0.1);
 }
 
 /* ─── ThreeUI ConstellationField Blue Glass Theme ──────────────────────────── */

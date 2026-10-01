@@ -56,13 +56,13 @@ export default function WorkPage() {
   );
 
   return (
-    <div className="px-[max(5.6vw,2rem)] py-24 md:py-32 flex-1 w-full max-w-7xl mx-auto">
+    <div className="px-[max(5.6vw,2rem)] pt-28 pb-20 md:pt-32 md:pb-28 flex-1 w-full max-w-6xl mx-auto">
       {/* Header section */}
       <div className="mb-12">
-        <h1 className="font-albert font-light uppercase text-5xl md:text-7xl mb-6 tracking-[-0.05em] leading-none">
+        <h1 className="font-albert font-light uppercase text-5xl md:text-7xl mb-6 tracking-[-0.05em] leading-none text-black dark:text-white transition-colors">
           Work
         </h1>
-        <p className="text-xl font-albert font-light text-black/80 max-w-2xl">
+        <p className="text-xl font-albert font-light text-black/80 dark:text-neutral-300 max-w-2xl transition-colors">
           A collection of projects showcasing my focus on clean design, interactive experiences, and robust architectures.
         </p>
       </div>
@@ -73,10 +73,10 @@ export default function WorkPage() {
           <button
             key={category}
             onClick={() => setActiveFilter(category)}
-            className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-black ${
+            className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-black dark:focus-visible:ring-[#F5C451] ${
               activeFilter === category 
-                ? "bg-black text-white border-black border" 
-                : "bg-transparent text-black border-black/20 border hover:border-black"
+                ? "bg-black text-white border-black dark:bg-[#F5C451] dark:text-black dark:border-[#F5C451] border" 
+                : "bg-transparent text-black border-black/20 border hover:border-black dark:text-white/80 dark:border-white/20 dark:hover:border-white"
             }`}
           >
             {category}
@@ -92,26 +92,26 @@ export default function WorkPage() {
             href={project.link} 
             className="group block"
           >
-            <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-black/5 mb-6 relative border border-black/10">
+            <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-black/5 dark:bg-white/[0.04] mb-6 relative border border-black/10 dark:border-white/10 group-hover:border-black/30 dark:group-hover:border-[#F5C451]/40 transition-colors">
               <div 
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                 style={{ backgroundImage: "url('" + project.imageUrl + "')" }}
               />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500" />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 dark:group-hover:bg-black/30 transition-colors duration-500" />
             </div>
             
             <div className="flex justify-between items-start mb-2">
-              <h3 className="font-albert font-medium text-xl">{project.title}</h3>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-black/0 group-hover:text-black transition-colors -translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 duration-300">
+              <h3 className="font-albert font-medium text-xl text-black dark:text-white transition-colors">{project.title}</h3>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-black/0 group-hover:text-black dark:group-hover:text-[#F5C451] transition-colors -translate-x-2 translate-y-2 group-hover:translate-x-0 group-hover:translate-y-0 duration-300">
                 <path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
             
-            <span className="font-fragment text-xs text-black/50 tracking-widest uppercase mb-3 block">
+            <span className="font-fragment text-xs text-black/50 dark:text-[#F5C451]/75 tracking-widest uppercase mb-3 block transition-colors">
               {project.category}
             </span>
             
-            <p className="font-albert text-black/70 text-sm">
+            <p className="font-albert text-black/70 dark:text-white/70 text-sm transition-colors">
               {project.description}
             </p>
           </a>

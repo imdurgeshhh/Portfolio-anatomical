@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { Signature } from "@/components/ui/signature";
 import { useResponsiveFontSize } from "@/hooks/use-responsive-font-size";
@@ -102,7 +103,7 @@ export default function GlassHero() {
   return (
     <section
       ref={containerRef}
-      className="relative w-full h-screen min-h-[640px] overflow-hidden selection:bg-black/20 flex flex-col justify-between"
+      className="relative w-full min-h-[100svh] overflow-hidden selection:bg-[#F5C451]/30 flex flex-col justify-between pt-20 sm:pt-24 pb-6 sm:pb-10 z-10"
       onPointerEnter={handlePointerEnter}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
@@ -110,43 +111,87 @@ export default function GlassHero() {
       onPointerUp={handlePointerLeave}
       onPointerDown={handlePointerEnter}
     >
-      {/* 1. Base Portrait Bleeding off Right/Bottom edge */}
-      <div
-        className="absolute inset-0 w-full h-full bg-center bg-no-repeat bg-cover -z-20 base-portrait-anim"
-        style={{ backgroundImage: "url('/images/Base_image_desktop.png')" }}
-        aria-hidden="true"
-      />
+      {/* 1. Base Portrait Layer (Smooth crossfade between light & dark) */}
+      <div className="absolute inset-0 w-full h-full -z-20 base-portrait-anim pointer-events-none overflow-hidden" aria-hidden="true">
+        {/* Light Base */}
+        <div className="absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out opacity-100 dark:opacity-0">
+          <Image
+            src="/images/Base_image_desktop.png"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[70%_center] sm:object-center pointer-events-none select-none"
+          />
+        </div>
+        {/* Dark Base */}
+        <div className="absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out opacity-0 dark:opacity-100">
+          <Image
+            src="/images/Base_image_dark.png"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[70%_center] sm:object-center pointer-events-none select-none"
+          />
+        </div>
+      </div>
 
-      {/* 2. Reveal Portrait with Radial Mask */}
+      {/* 2. Reveal Portrait with Radial Mask (Smooth crossfade between light & dark) */}
+      <div className="absolute inset-0 w-full h-full -z-10 reveal-mask pointer-events-none overflow-hidden" aria-hidden="true">
+        {/* Light Reveal */}
+        <div className="absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out opacity-100 dark:opacity-0">
+          <Image
+            src="/images/Reveal_image_desktop.png"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[70%_center] sm:object-center pointer-events-none select-none"
+          />
+        </div>
+        {/* Dark Reveal */}
+        <div className="absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out opacity-0 dark:opacity-100">
+          <Image
+            src="/images/Reveal_image_dark.png"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[70%_center] sm:object-center pointer-events-none select-none"
+          />
+        </div>
+      </div>
+
+      {/* Ambient Golden Rim Light Glow in Dark Mode */}
       <div
-        className="absolute inset-0 w-full h-full bg-center bg-no-repeat bg-cover -z-10 reveal-mask"
-        style={{ backgroundImage: "url('/images/Reveal_image_desktop.png')" }}
+        className="absolute top-1/3 right-[5%] w-[550px] h-[550px] rounded-full bg-amber-500/15 blur-[140px] pointer-events-none -z-15 opacity-0 dark:opacity-100 transition-opacity duration-700"
         aria-hidden="true"
       />
 
       {/* 3. Technical Aesthetic Circle */}
       <div
-        className="absolute inset-0 w-full h-full pointer-events-none -z-5 opacity-10 flex items-center justify-center"
+        className="absolute inset-0 w-full h-full pointer-events-none -z-5 opacity-10 dark:opacity-20 flex items-center justify-center transition-opacity"
         aria-hidden="true"
       >
-        <div className="w-[80vmin] h-[80vmin] rounded-full border border-black/10" />
+        <div className="w-[80vmin] h-[80vmin] rounded-full border border-black/10 dark:border-[#F5C451]/30 dark:shadow-[0_0_80px_rgba(245,196,81,0.08)] transition-colors duration-500" />
       </div>
 
       {/* 4. Top-Left and Top-Right Micro Labels */}
-      <div className="relative z-30 pt-7 sm:pt-9 px-[max(5.6vw,2rem)] flex items-center justify-between pointer-events-none">
-        <span className="font-mono text-[10px] sm:text-xs text-black/50 tracking-widest uppercase">
+      <div className="relative z-30 px-[max(5.6vw,2rem)] flex items-center justify-between pointer-events-none mb-auto">
+        <span className="font-mono text-[10px] sm:text-xs text-black/50 dark:text-[#F5C451]/80 tracking-widest uppercase transition-colors">
           INTERACTIVE DIMENSION · HOVER TO REVEAL
         </span>
-        <span className="font-mono text-[10px] sm:text-xs text-black/40 tracking-wider hidden sm:inline">
+        <span className="font-mono text-[10px] sm:text-xs text-black/40 dark:text-amber-200/50 tracking-wider hidden sm:inline transition-colors">
           Curated Visual Experience
         </span>
       </div>
 
       {/* 5. Left Column Content: Heading, Subtext, Button */}
-      <div className="relative z-30 px-[max(5.6vw,2rem)] my-auto max-w-2xl py-8">
+      <div className="relative z-30 px-[max(5.6vw,2rem)] my-auto max-w-2xl py-6">
         {/* Animated handwritten SVG signature with accessible text */}
         <div
-          className="w-full overflow-visible relative text-black select-none flex items-center"
+          className="w-full overflow-visible relative select-none flex items-center"
           style={{ minHeight: `${fontSize * 3}px` }}
         >
           <h1 className="sr-only">Durgesh</h1>
@@ -155,20 +200,19 @@ export default function GlassHero() {
             fontSize={fontSize}
             duration={1.5}
             delay={0.3}
-            color="#000000"
-            className="max-w-full h-auto text-black"
+            className="max-w-full h-auto"
           />
         </div>
 
         {/* Short paragraph text */}
-        <p className="mt-6 sm:mt-8 text-sm sm:text-base font-sans font-normal text-black/80 leading-relaxed max-w-md copy-fade-anim delay-[450ms]">
+        <p className="mt-4 sm:mt-6 text-sm sm:text-base font-sans font-normal text-black/80 dark:text-neutral-300 leading-relaxed max-w-md copy-fade-anim delay-[450ms] transition-colors">
           I build useful products, experiment with emerging technology, and turn the process into stories worth sharing.
         </p>
 
         {/* ThreeUI ShaderButtons (Star Portal) replacing 'Explore my work' button */}
-        <div className="mt-8 copy-fade-anim delay-[600ms]">
+        <div className="mt-6 sm:mt-8 copy-fade-anim delay-[600ms]">
           <div
-            className="shader-frame w-full max-w-[320px] sm:max-w-[360px] !h-[90px] sm:!h-[105px] !min-h-0 relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-black/10 transition-transform active:scale-[0.98] cursor-pointer"
+            className="w-full max-w-[320px] sm:max-w-[360px] h-[90px] sm:h-[105px] relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-black/10 dark:border-[#F5C451]/30 dark:shadow-[0_0_35px_rgba(245,196,81,0.2)] transition-all active:scale-[0.98] cursor-pointer"
             onClick={() => {
               document.getElementById("slide-section")?.scrollIntoView({ behavior: "smooth" });
             }}
@@ -186,7 +230,7 @@ export default function GlassHero() {
       </div>
 
       {/* Bottom spacing buffer */}
-      <div className="h-6 pointer-events-none" />
+      <div className="h-4 sm:h-6 pointer-events-none mt-auto" />
     </section>
   );
 }

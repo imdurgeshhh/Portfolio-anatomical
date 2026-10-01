@@ -7,11 +7,11 @@ import { Spinner } from "@/components/ui/spinner";
 export function ButtonLoading() {
   return (
     <div className="flex flex-wrap gap-2 items-center">
-      <Button variant="outline" disabled className="min-h-[44px] px-6 rounded-full border-black/20 bg-white">
+      <Button variant="outline" disabled className="min-h-[44px] px-6 rounded-full border-black/20 bg-white text-black dark:bg-white/10 dark:text-white dark:border-white/20">
         <Spinner data-icon="inline-start" />
         Generating
       </Button>
-      <Button variant="secondary" disabled className="min-h-[44px] px-6 rounded-full bg-black/10">
+      <Button variant="secondary" disabled className="min-h-[44px] px-6 rounded-full bg-black/10 text-black dark:bg-white/15 dark:text-white">
         Downloading
         <Spinner data-icon="inline-start" />
       </Button>
@@ -54,7 +54,7 @@ export function ResumeDownloadButton() {
       <Button
         variant="outline"
         disabled
-        className="min-h-[44px] px-6 rounded-full border-black/20 bg-white text-black shadow-xs"
+        className="min-h-[44px] px-6 rounded-full border-black/20 bg-white text-black dark:bg-white/10 dark:text-white dark:border-white/20 shadow-xs"
       >
         <Spinner data-icon="inline-start" />
         Generating
@@ -67,7 +67,7 @@ export function ResumeDownloadButton() {
       <Button
         variant="secondary"
         disabled
-        className="min-h-[44px] px-6 rounded-full bg-black/10 text-black shadow-xs cursor-wait"
+        className="min-h-[44px] px-6 rounded-full bg-black/10 text-black dark:bg-white/15 dark:text-white shadow-xs cursor-wait"
       >
         Downloading
         <Spinner data-icon="inline-start" className="ml-2 mr-0" />
@@ -94,7 +94,7 @@ export function ResumeDownloadButton() {
     <Button
       variant="default"
       onClick={handleDownload}
-      className="bg-white text-black text-sm font-medium px-6 min-h-[44px] items-center justify-center rounded-full border border-black/20 hover:bg-black hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-black/50 focus-visible:ring-offset-2 shadow-xs active:scale-[0.98]"
+      className="bg-white text-black dark:bg-[#F5C451] dark:text-black dark:border-[#F5C451] dark:hover:bg-[#e0b038] text-sm font-medium px-6 min-h-[44px] items-center justify-center rounded-full border border-black/20 hover:bg-black hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-black/50 dark:focus-visible:ring-[#F5C451]/50 focus-visible:ring-offset-2 shadow-xs active:scale-[0.98]"
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" className="mr-2">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />

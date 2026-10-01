@@ -33,7 +33,7 @@ export default function ConstellationBackground({
   speed = 0.65,
   size = 1.15,
   length = 1.0,
-  mode = "light",
+  mode = "auto",
   background = "transparent",
 }: ConstellationBackgroundProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -41,9 +41,24 @@ export default function ConstellationBackground({
   const [isReducedMotion, setIsReducedMotion] = useState(false);
   const [hasCanvas, setHasCanvas] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
+  const [systemTheme, setSystemTheme] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
     setIsMounted(true);
+
+    const updateTheme = () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      setSystemTheme(isDark ? "dark" : "light");
+    };
+    updateTheme();
+
+    const observer = new MutationObserver(() => updateTheme());
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    window.addEventListener("theme-change", updateTheme);
 
     // 1. Check Canvas 2D availability gracefully
     try {
@@ -80,9 +95,9 @@ export default function ConstellationBackground({
     document.addEventListener("visibilitychange", handleVisibilityChange);
 
     // 4. IntersectionObserver: pause / freeze when section is off-screen
-    let observer: IntersectionObserver | null = null;
+    let ioObserver: IntersectionObserver | null = null;
     if (containerRef.current && "IntersectionObserver" in window) {
-      observer = new IntersectionObserver(
+      ioObserver = new IntersectionObserver(
         (entries) => {
           const [entry] = entries;
           if (entry) {
@@ -91,14 +106,16 @@ export default function ConstellationBackground({
         },
         { rootMargin: "100px" } // Pre-warm slightly before coming into view
       );
-      observer.observe(containerRef.current);
+      ioObserver.observe(containerRef.current);
     }
 
     return () => {
+      observer.disconnect();
+      window.removeEventListener("theme-change", updateTheme);
       motionQuery.removeEventListener("change", handleMotionChange);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      if (observer) {
-        observer.disconnect();
+      if (ioObserver) {
+        ioObserver.disconnect();
       }
     };
   }, []);
@@ -108,14 +125,10 @@ export default function ConstellationBackground({
     return null;
   }
 
-  // Calculated hue shift:
-  // ThreeUI base node color in dark mode: #E6C879 (gold, hue = 43°).
-  // Target theme color: cyan / sky blue (#38bdf8, hue = 201°).
-  const isLight = mode === "light";
-  // In light mode, our custom patch injects #0284c7 (icy blue) and #0369a1 (deep azure).
-  // In dark mode, hue 158 rotates base gold #E6C879 (43°) to cyan #38bdf8 (201°).
-  const targetHue = isLight ? 0 : 158;
-  const targetSaturation = isLight ? 1.0 : 1.2;
+  const resolvedMode = mode === "auto" ? systemTheme : mode;
+  const isLight = resolvedMode === "light";
+  const targetHue = isLight ? 0 : 0;
+  const targetSaturation = isLight ? 1.0 : 1.1;
   const targetBrightness = isLight ? 1.0 : 1.05;
 
   // Effective animation speed: 0 when off-screen or reduced-motion requested, else tuned smooth 0.65
@@ -128,7 +141,7 @@ export default function ConstellationBackground({
       aria-hidden="true"
     >
       <DynamicConstellationField
-        mode={mode === "auto" ? "light" : mode}
+        mode={resolvedMode}
         speed={activeSpeed}
         size={size}
         strokeWidth={strokeWidth}

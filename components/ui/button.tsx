@@ -4,18 +4,18 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-medium transition-all duration-200 ease-out-spring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-medium transition-all duration-200 ease-out-spring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50 dark:focus-visible:ring-[#F5C451]/50 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
   {
     variants: {
       variant: {
         default:
-          "bg-white text-black border border-black hover:bg-black hover:text-white shadow-sm",
+          "bg-white text-black border border-black hover:bg-black hover:text-white dark:bg-[#F5C451] dark:text-black dark:border-[#F5C451] dark:hover:bg-[#e0b038] shadow-sm",
         secondary:
-          "bg-black/5 text-black hover:bg-black/10 border border-black/10",
+          "bg-black/5 text-black hover:bg-black/10 border border-black/10 dark:bg-white/10 dark:text-white dark:border-white/15 dark:hover:bg-white/20",
         outline:
-          "border border-black/20 bg-transparent hover:bg-black/5 text-black",
-        ghost: "hover:bg-black/5 text-black",
-        link: "text-black underline-offset-4 hover:underline",
+          "border border-black/20 bg-transparent hover:bg-black/5 text-black dark:border-white/20 dark:text-white dark:hover:bg-white/10",
+        ghost: "hover:bg-black/5 text-black dark:hover:bg-white/10 dark:text-white",
+        link: "text-black underline-offset-4 hover:underline dark:text-[#F5C451]",
       },
       size: {
         default: "min-h-[44px] px-6 py-2",
